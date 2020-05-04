@@ -1,17 +1,32 @@
 {
-    "name": "hindawi-scrapper",
-    "version": "1.0.0",
-    "description": "",
-    "main": "index.js",
-    "scripts": {
-        "start": "node index.js",
-        "test": "echo \"Error: no test specified\" && exit 1"
-    },
-    "author": "Mohannad Hisham",
-    "license": "MIT",
-    "dependencies": {
-        "cheerio": "^1.0.0-rc.3",
-        "express": "^4.17.1",
-        "node-fetch": "^2.6.0"
-    }
+  "name": "hindawi-scrapper",
+  "version": "1.0.0",
+  "description": "I started this project to enable the use and download of books from hindawi.org (a free arabic library service).",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Mohannad Hisham",
+  "license": "MIT",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.3",
+    "express": "^4.17.1",
+    "node-fetch": "^2.6.0"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://mohannadize@github.com/mohannadize/hindawi-scrapper.git"
+  },
+  "keywords": [
+    "scrapper",
+    "js",
+    "node",
+    "npm"
+  ],
+  "bugs": {
+    "url": "https://github.com/mohannadize/hindawi-scrapper/issues"
+  },
+  "homepage": "https://github.com/mohannadize/hindawi-scrapper#readme"
 }
