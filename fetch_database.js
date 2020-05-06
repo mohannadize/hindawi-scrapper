@@ -13,70 +13,83 @@ const baseURL = "https://www.hindawi.org";
 let array_promises = [];
 let bar1;
 
-fetch(startURL).then(res => res.text()).then(html => {
-    let $ = cheerio.load(html);
-    let subjects = $(`.subjects li`).map((i, ele) => {
-        let href = $(`a`, ele).attr('href');
-        let name;
-        let nameArabic;
-        if (i) {
-            name = href.match(/(categories\/+(.+)\/)/i)[2];
-            nameArabic = $(`.linkTitle`, ele).text().trim();
+async function fetch_database() {
+    let promise = new Promise((resolve, reject) => {
 
-        } else {
-            name = 'Not categorized';
-            nameArabic = 'غير مصنف'
-        };
-        let books = hindi_to_arabic($('.count', ele).text().trim());
-        let pages = Math.ceil(books / 10);
-        return { name, nameArabic, href, books, pages }
+        fetch(startURL).then(res => res.text()).then(html => {
+            let $ = cheerio.load(html);
+            let subjects = $(`.subjects li`).map((i, ele) => {
+                let href = $(`a`, ele).attr('href');
+                let name;
+                let nameArabic;
+                if (i) {
+                    name = href.match(/(categories\/+(.+)\/)/i)[2];
+                    nameArabic = $(`.linkTitle`, ele).text().trim();
 
-    }).toArray();
+                } else {
+                    name = 'nosubject';
+                    nameArabic = 'غير مصنف'
+                };
+                let books = hindi_to_arabic($('.count', ele).text().trim());
+                let pages = Math.ceil(books / 10);
+                return { name, nameArabic, href, books, pages }
 
-    let total_pages = subjects.reduce((acc, cur) => acc + cur.pages, 0);
-    console.log('total number of pages to be downloaded: ', total_pages);
+            }).toArray();
 
-    // create a new progress bar instance and use shades_classic theme
-    console.log("fetching pages");
-    bar1 = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
-    bar1.start(total_pages, 0);
+            let total_pages = subjects.reduce((acc, cur) => acc + cur.pages, 0);
+            console.log('total number of pages to be downloaded: ', total_pages);
 
-
-    subjects.forEach(item => {
-        for (let i = 1; i <= item.pages; i++) {
-            let url = `${baseURL + item.href}${i}/`;
-            array_promises.push(
-                fetch(url)
-                    .then(res => {
-                        bar1.increment();
-                        return res.text();
-                    }).then(res => [res, { name: item.name, nameArabic: item.nameArabic }]).catch(err => console.log(`\nCould not fetch page ${i}`))
-            )
-        }
-    })
-    Promise.all(array_promises).then(res => {
-        bar1.stop();
+            // create a new progress bar instance and use shades_classic theme
+            console.log("fetching pages");
+            bar1 = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
+            bar1.start(total_pages, 0);
 
 
-        let books = scrape_book_info(res);
-        console.log("Books fetched: ", Object.keys(books).length);
+            subjects.forEach(item => {
+                for (let i = 1; i <= item.pages; i++) {
+                    let url = `${baseURL + item.href}${i}/`;
+                    array_promises.push(
+                        fetch(url)
+                            .then(res => {
+                                bar1.increment();
+                                return res.text();
+                            }).then(res => [res, { name: item.name, nameArabic: item.nameArabic }]).catch(err => { reject(); console.log(`\nCould not fetch page ${i}`) })
+                    )
+                }
+            })
+            Promise.all(array_promises).then(res => {
+                bar1.stop();
 
-        console.log("Generating JSON file");
-        fs.mkdir("./database/", { recursive: true }, (err) => {
-            if (!err) {
-                fs.writeFile("./database/database.json", JSON.stringify(books), function (err) {
-                    if (err) {
-                        console.error('An error has occured while saving the file', err)
+
+                let books = scrape_book_info(res);
+                console.log("Books fetched: ", Object.keys(books).length);
+
+                console.log("Generating JSON file");
+                fs.mkdir("./database/", { recursive: true }, (err) => {
+                    if (!err) {
+                        fs.writeFile("./database/database.json", JSON.stringify(books), function (err) {
+                            if (err) {
+                                console.error('An error has occured while saving the file', err)
+                                reject();
+                            } else {
+                                console.log("✔✔ File saved successfully")
+                                resolve();
+                            }
+                        });
                     } else {
-                        console.log("✔✔ File saved successfully")
+                        console.error('An error has occured while saving the file', err)
+                        reject();
                     }
-                });
-            } else {
-                console.error('An error has occured while saving the file', err)
-            }
+                })
+            }).catch((err) => {
+                console.log("Please try again later");
+                console.error(err);
+                reject();
+            })
         })
-    }).catch((err) => {
-        console.log("Please try again later");
-        console.error(err);
-    })
-})
+    });
+
+    return promise;
+}
+
+module.exports.fetch_database = fetch_database;

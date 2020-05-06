@@ -2,14 +2,26 @@ const express = require("express");
 const app = express();
 const port = process.env.port || 3000;
 const fetch = require("node-fetch");
+const { fetch_database } = require("./fetch_database");
 const fs = require("fs");
 
 // Setting up database
-let db;
-let db_array;
+let db = {};
+let db_array = [];
 fs.readFile("./database/database.json", (err, buffer) => {
-    db = JSON.parse(buffer);
-    db_array = Object.values(db);
+    if (err) {
+        fetch_database().then(() => {
+            fs.readFile("./database/database.json", (err, buffer) => {
+                if (!err) {
+                    db = JSON.parse(buffer);
+                    db_array = Object.values(db);
+                }
+            });
+        })
+    } else {
+        db = JSON.parse(buffer);
+        db_array = Object.values(db);
+    }
 });
 
 
