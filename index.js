@@ -32,8 +32,8 @@ app.get("/", (req, res) => {
 });
 
 app.get("/category/*", (req, res) => {
-    let category = req.url.match(/category\/([^\/|.]+)\/*(\d)*\/*/i)[1];
-    let page = req.url.match(/category\/([^\/|.]+)\/*(\d)*\/*/i)[2] || 1;
+    let category = req.url.match(/category\/([\w\.]+)\/*(\d+)*/i)[1];
+    let page = req.url.match(/category\/([\w\.]+)\/*(\d+)*/i)[2] || 1;
     let books = db_array.filter(book => book.subject.name == category);
     let search = req.params.search || false;
     if (search) {
