@@ -13,3 +13,15 @@ Clone this git repo then run this command inside
 ```
 npm install
 ```
+
+## Creating Database json file of categorized books
+
+```
+node fetch_database.js
+```
+
+## Creating a database json file of all books
+
+```
+node non_categorized_fetch.js
+```
