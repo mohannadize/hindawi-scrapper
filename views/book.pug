@@ -1,8 +1,9 @@
 li.has-text-right
     .columns
         .column
-            p.title.is-5.rtl= book.title
-            p.subtitle.rtl= book.author
+            p.title.is-4.rtl= book.title
+            p.subtitle.rtl
+                a(href="?search="+book.author)= book.author
             p.rtl= book.description
             hr
             .buttons
@@ -12,5 +13,5 @@ li.has-text-right
                             i.fa.fa-download
                         span= key
         .column.is-2
-            img.image(src=book.poster, alt="Poster of #{book.title}")
+            //- img.image(src=book.poster, alt="Poster of #{book.title}")
             a.rtl.is-block(href="/category/"+book.subject.name)= book.subject.nameArabic
