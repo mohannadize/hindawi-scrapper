@@ -31,9 +31,9 @@ function scrape_book_info(res) {
 
         let $ = cheerio.load(html);
         $('.book').map((i, ele) => {
-            let title = $("h2", ele).text().trim();
+            let title = ''; // || $("h2", ele).text().trim();
             let author = $(".author", ele).text().trim();
-            let description = $(".content", ele).text().trim();
+            let description = ''; // $(".content", ele).text().trim();
             let poster = $('.cover object', ele).attr("data");
             let id = $(".cta a", ele).attr('href').match(/[0-9]+/)[0];
             let link = `https://www.hindawi.org/books/${id}/`
@@ -42,7 +42,13 @@ function scrape_book_info(res) {
             let kfx = link.substr(0, link.length - 1) + '.kfx';
             let download = { pdf, epub, kfx };
             let book = { id, title, author, subject, description, poster, link, download };
-            books[id] = book;
+            if (books[id]) {
+                if (subject.name != 'Not categorized') {
+                    books[id] = book;
+                }
+            } else {
+                books[id] = book;
+            }
         });
         bar2.increment();
     })
