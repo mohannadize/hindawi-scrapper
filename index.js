@@ -29,7 +29,7 @@ app.use(express.static('public'))
 app.set('view engine', 'pug')
 app.get("/", (req, res) => {
     let books;
-    let search = req.params.search || false;
+    let search = req.query.search || false;
     if (search) {
         books = db_array.filter(book => {
             return book.author.indexOf(search) != -1 || book.title.indexOf(search) != -1 || book.description.indexOf(search) != -1;
@@ -47,7 +47,7 @@ app.get("/category/*", (req, res) => {
     let category = req.url.match(/category\/([\w\.]+)\/*(\d+)*/i)[1];
     let page = req.url.match(/category\/([\w\.]+)\/*(\d+)*/i)[2] || 1;
     let books = db_array.filter(book => book.subject.name == category);
-    let search = req.params.search || false;
+    let search = req.query.search || false;
     if (search) {
         books = books.filter(book => {
             return book.author.indexOf(search) != -1 || book.title.indexOf(search) != -1 || book.description.indexOf(search) != -1;
