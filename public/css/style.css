@@ -1,0 +1,7 @@
+.rtl {
+  direction: rtl;
+}
+
+.is-fullwidth {
+  width: 100vw;
+}
