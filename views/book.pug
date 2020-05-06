@@ -1,0 +1,16 @@
+li.has-text-right
+    .columns
+        .column
+            p.title.is-5.rtl= book.title
+            p.subtitle.rtl= book.author
+            p.rtl= book.description
+            hr
+            .buttons
+                each value, key in book.download
+                    a.button.is-medium(href=value)
+                        span.icon
+                            i.fa.fa-download
+                        span= key
+        .column.is-2
+            img.image(src=book.poster, alt="Poster of #{book.title}")
+            a.rtl.is-block(href="/category/"+book.subject.name)= book.subject.nameArabic

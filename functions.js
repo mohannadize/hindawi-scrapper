@@ -31,9 +31,9 @@ function scrape_book_info(res) {
 
         let $ = cheerio.load(html);
         $('.book').map((i, ele) => {
-            let title = ''; // || $("h2", ele).text().trim();
+            let title = $("h2", ele).text().trim();
             let author = $(".author", ele).text().trim();
-            let description = ''; // $(".content", ele).text().trim();
+            let description = $(".content", ele).text().trim();
             let poster = $('.cover object', ele).attr("data");
             let id = $(".cta a", ele).attr('href').match(/[0-9]+/)[0];
             let link = `https://www.hindawi.org/books/${id}/`
