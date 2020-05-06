@@ -2,20 +2,13 @@ const express = require("express");
 const app = express();
 const port = 3000;
 const fetch = require("node-fetch");
-const cheerio = require("cheerio");
-const fs = require("fs");
 
-const baseURL = "https://hindawi.org";
+
+app.set('view engine', 'pug')
 
 app.get("/", (req, res) => {
-
+    res.render('index', { title: 'Hey', list: ['poop', 'peep', 'paap'] })
 });
 
-app.get("/books/", (req, res) => {
+app.listen(port, () => console.log(`Example app listening at http://localhost:${port}`))
 
-});
-
-// app.listen(port, () => console.log(`Example app listening at http://localhost:${port}`))
-
-let all_books;
-let not_all;
